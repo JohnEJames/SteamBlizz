@@ -9,33 +9,87 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.jack.steamblizz.BattleNetDashbored">
+    tools:context="com.example.jack.steamblizz.BattleNetDashboard">
 
-    <ImageButton
-        android:layout_width="200px"
-        android:layout_height="200px"
-        app:srcCompat="@drawable/sc2"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="24dp"
-        android:id="@+id/starcraftimg" />
+        android:layout_alignParentStart="true">
 
-    <ImageButton
-        android:layout_width="200px"
-        android:layout_height="200px"
-        app:srcCompat="@drawable/diablo"
-        android:layout_marginTop="36dp"
-        android:id="@+id/diabloimg"
-        android:layout_below="@+id/starcraftimg"
-        android:layout_alignStart="@+id/starcraftimg" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="112dp">
 
-    <ImageButton
-        android:layout_width="200px"
-        android:layout_height="200px"
-        app:srcCompat="@drawable/wow"
-        android:layout_below="@+id/diabloimg"
-        android:layout_alignStart="@+id/diabloimg"
-        android:layout_marginTop="50dp"
-        android:id="@+id/wowimg" />
+            <ImageButton
+                android:layout_width="200px"
+                android:layout_height="200px"
+                app:srcCompat="@drawable/diablo"
+                android:id="@+id/diablo"
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                android:background="@android:color/background_light" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="104dp"
+                android:inputType="textPersonName"
+                android:text="Diabloe 3 from blizzard, is a role playing game"
+                android:ems="10"
+                android:id="@+id/editText2"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.AppCompat" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:layout_width="200px"
+                android:layout_height="200px"
+                app:srcCompat="@drawable/sc2"
+                android:id="@+id/starcraft"
+                android:layout_weight="0.05"
+                android:scaleType="fitCenter"
+                android:background="@android:color/background_light" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="Starcraft is an RTS"
+                android:ems="10"
+                android:id="@+id/editText3"
+                android:layout_weight="0.05" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="226dp">
+
+            <ImageButton
+                android:layout_width="200px"
+                android:layout_height="200px"
+                app:srcCompat="@drawable/wow"
+                android:id="@+id/wow"
+                android:layout_weight="1"
+                android:scaleType="fitCenter"
+                android:background="@android:color/background_light" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:text="World of warcraft is a mmo rpg"
+                android:ems="10"
+                android:id="@+id/editText5"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>
