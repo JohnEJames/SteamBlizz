@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SteamBlizz</string>
+    <string name="blizz_key">4uke22gjvav7yf53ztb2yuedr9tfhrmv</string>
+    <string name="steam_key">C10DEAF2436AA851A9C742D46AC7D7A8</string>
 </resources>
