@@ -12,30 +12,30 @@
     tools:context="com.example.jack.steamblizz.SelectPlatform">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
         <ImageButton
-            app:srcCompat="@drawable/battlenet"
             android:id="@+id/BattleNet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/background_light"
             android:backgroundTint="@android:color/background_light"
-            android:scaleType="fitCenter"
             android:elevation="0dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/battlenet" />
 
         <ImageButton
+            android:id="@+id/Steam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/steam"
-            android:id="@+id/Steam"
             android:layout_weight="1"
             android:background="@android:color/background_light"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/steam" />
     </LinearLayout>
 </RelativeLayout>
