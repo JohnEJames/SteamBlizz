@@ -16,7 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".BattleNetDashboard" />
-        <activity android:name=".BattleNetAPI"></activity>
+        <activity android:name=".BattleNetAPI" />
+        <activity android:name=".SteamDasboard"></activity>
     </application>
 
 </manifest>
