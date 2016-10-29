@@ -16,7 +16,7 @@ public class SteamDasboard extends AppCompatActivity {
 
         ListView listView = (ListView) findViewById(R.id.listAllGames);
         // listView.setAdapter(adapter);
-        SteamAPIParser steamAPIParser = new SteamAPIParser("");
+        SteamAPIParser steamAPIParser = new SteamAPIParser(this, "");
         Hashtable<Integer, String> games = steamAPIParser.getSteamGameList();
 
         System.out.print(games);
