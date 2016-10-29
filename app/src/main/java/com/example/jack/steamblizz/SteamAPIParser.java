@@ -182,7 +182,8 @@ final public class SteamAPIParser {
         reader.beginObject(); // {
         reader.nextName(); // "appnews":
         reader.beginObject(); // {
-        reader.skipValue(); // "appid" : 9999,
+        reader.nextName(); //"appid" :
+        reader.skipValue(); // 9999,
         reader.nextName(); // "newsitem":
         reader.beginArray(); // [
         while (reader.hasNext()) { // loop until end of array
@@ -322,23 +323,219 @@ final public class SteamAPIParser {
     }
 
     void GetPlayerAchievements(JsonReader reader) throws IOException {
+        String steamid;
+        String gameName;
+        String apiName;
+        Boolean achieved;
 
+        reader.beginObject(); // {
+        reader.nextName(); // "playerstats":
+        reader.beginObject(); // {
+        if (reader.nextName().equals("steamID")) {
+            // Making sure steamID is getting the correct value
+            steamid = reader.nextString();
+        }
+        if (reader.nextName().equals("gameName")) {
+            // Making sure gameName is getting the correct value
+            gameName = reader.nextString();
+        }
+        if (reader.nextName().equals("achievements")) {
+            // Making sure achievements is getting the correct value
+            reader.beginArray(); // [
+            while (reader.hasNext()) { // loop until end of array
+                reader.beginObject(); // {
+                while (reader.hasNext()) { // loop until end of object
+                    String name = reader.nextName();
+                    if (name.equals("apiname")) {
+                        apiName = reader.nextString();
+                    } else if (name.equals("achieved")) {
+                        achieved = reader.nextBoolean();
+                    } else {
+                        reader.skipValue();
+                    }
+                }
+                reader.endObject(); // }
+                // TODO this is where to insert the entry into the database
+                // Only when achieved is true
+            }
+            reader.endArray(); // ]
+            reader.nextName(); // "success":
+            reader.skipValue(); // true
+            reader.endObject(); // }
+            reader.endObject(); // }
+        }
     }
 
     void GetUserStatsForGame(JsonReader reader) throws IOException {
+        String steamid;
+        String gameName;
+        String stat;
+        Integer value;
 
+        reader.beginObject(); // {
+        reader.nextName(); // "playerstats":
+        reader.beginObject(); // {
+        if (reader.nextName().equals("steamID")) {
+            // Making sure steamID is getting the correct value
+            steamid = reader.nextString();
+        }
+        if (reader.nextName().equals("gameName")) {
+            // Making sure gameName is getting the correct value
+            gameName = reader.nextString();
+        }
+        if (reader.nextName().equals("stats")) {
+            // Making sure stats si getting the correct value
+            reader.beginArray(); // [
+            while (reader.hasNext()) { // loop until end of array
+                reader.beginObject(); // {
+                while (reader.hasNext()) { // loop until end of object
+                    String name = reader.nextName();
+                    if (name.equals("name")) {
+                        stat = reader.nextString();
+                    } else if (name.equals("value")) {
+                        value = reader.nextInt();
+                    } else {
+                        reader.skipValue();
+                    }
+                }
+                reader.endObject(); // }
+                // TODO this is where to insert the entry into the database
+            }
+            reader.endArray(); // ]
+            reader.endObject(); // }
+            reader.endObject(); // }
+        }
     }
 
     void GetOwnedGames(JsonReader reader) throws IOException {
+        Integer gameCount;
+        Integer appid;
+        Integer minutesPlayed;
 
+        reader.beginObject(); // {
+        reader.nextName(); // "response":
+        reader.beginObject(); // {
+        if (reader.nextName().equals("game_count")) {
+            // Making sure gameCount is getting the correct value
+            gameCount = reader.nextInt();
+        }
+        reader.nextName(); // "games":
+        reader.beginArray(); // [
+        while (reader.hasNext()) { // loop until end of array
+            reader.beginObject(); // {
+            while (reader.hasNext()) { // loop until end of object
+                String name = reader.nextName();
+                if (name.equals("appid")) {
+                    appid = reader.nextInt();
+                } else  if (name.equals("playtime_forever")){
+                    minutesPlayed = reader.nextInt();
+                } else {
+                    reader.skipValue();
+                }
+            }
+            reader.endObject(); // }
+            // TODO this is where to insert the entry into the database
+        }
+        reader.endArray(); // ]
+        reader.endObject(); // }
+        reader.endObject(); //}
     }
 
     void GetRecentlyPlayedGames(JsonReader reader) throws IOException {
+        Integer totalCount;
+        Integer appid;
+        String title;
+        Integer playtimeForever;
+        Integer playtime2Weeks;
 
+        reader.beginObject(); // {
+        reader.nextName(); // "response":
+        reader.beginObject(); // {
+        if (reader.nextName().equals("total_count")) {
+            // Making sure totalCount is getting the currect value
+            totalCount = reader.nextInt();
+        }
+        reader.nextName(); // "game":
+        reader.beginArray(); // [
+        while (reader.hasNext()) { // loop until end of array
+            reader.beginObject(); // {
+            while (reader.hasNext()) { // loop until end of object
+                String name = reader.nextName();
+                if (name.equals("appid")) {
+                    appid = reader.nextInt();
+                } else if (name.equals("name")) {
+                    title = reader.nextString();
+                } else if (name.equals("playtime_2weeks")) {
+                    playtime2Weeks = reader.nextInt();
+                } else if (name.equals("playtime_forever")) {
+                    playtimeForever = reader.nextInt();
+                } else {
+                    reader.skipValue();
+                }
+            }
+            reader.endObject(); // }
+            // TODO this is where to insert the entry into the database
+        }
+        reader.endArray(); //]
+        reader.endObject(); // }
+        reader.endObject(); // }
     }
 
     void GetSchemaForGame(JsonReader reader) throws IOException {
+        String gameName;
+        String stat; // for both achievement and stats
+        String display; // for both achievement and stats
+        String description;
+        String icon;
+        String iconGray;
 
+        reader.beginObject(); // {
+        reader.nextName(); // "game":
+        reader.beginObject(); // {
+        if (reader.nextName().equals("gameName")) {
+            // Making sure gameName is getting the correct value
+            gameName = reader.nextString();
+        }
+        reader.nextName(); // "gameVersion":
+        reader.skipValue(); // "999",
+        reader.nextName(); // "availableGameStats":
+        reader.beginObject(); // {
+        while (reader.hasNext()) { // loop until end of object
+            String statsType = reader.nextName(); // "achievements" or "stats"
+            reader.beginArray(); // [
+            while (reader.hasNext()) { // loop until end of array
+                reader.beginObject(); // {
+                while (reader.hasNext()) { // loop until end of object
+                    String name = reader.nextName();
+                    if (name.equals("name")) {
+                        stat = reader.nextString();
+                    } else if (name.equals("displayName")) {
+                        display = reader.nextString();
+                    } else if (statsType.equals("achievements")) {
+                        if (name.equals("description")) {
+                            description = reader.nextString();
+                        } else if (name.equals("icon")) {
+                            icon = reader.nextString();
+                        } else if (name.equals("icongray")) {
+                            iconGray = reader.nextString();
+                        }
+                    } else {
+                        reader.skipValue();
+                    }
+                }
+                reader.endObject(); // }
+                // TODO this is where to insert the entry into the database
+                if (statsType.equals("achievements")) {
+                    // put into achievement table
+                } else {
+                    // put into stats table
+                }
+            }
+            reader.endArray(); // ]
+        }
+        reader.endObject(); // }
+        reader.endObject(); // }
+        reader.endObject(); // }
     }
 
     private class DownloadAndParseJSON extends AsyncTask<String, Void, Void> {
