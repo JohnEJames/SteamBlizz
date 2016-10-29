@@ -70,19 +70,6 @@ final public class SteamAPIParser {
         return SteamGameList;
     }
 
-    private class DownloadAndParseJSON extends AsyncTask<String, Void, Void> {
-        protected Void doInBackground(String... urls) {
-            try {
-                //call our downloadAndParse function
-                downloadAndParse(urls[0]);
-                //handle cancelling the download
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
     void GetNewsForApp(String appid) throws IOException {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetNewsForApp))
                 .append("appid=").append(appid)
@@ -306,7 +293,32 @@ final public class SteamAPIParser {
     }
 
     void GetFriendList(JsonReader reader) throws IOException {
+        String steamid;
+        Date since;
 
+        reader.beginObject(); // {
+        reader.nextName(); // "friendslist":
+        reader.beginObject(); // {
+        reader.nextName(); // "friends":
+        reader.beginArray(); // [
+        while (reader.hasNext()) { // loop until end of array
+            reader.beginObject(); // {
+            while (reader.hasNext()) { // loop until end of object
+                String name = reader.nextName();
+                if (name.equals("steamid")) {
+                    steamid = reader.nextString();
+                } else if (name.equals("friend_since")) {
+                    since = new Date(reader.nextLong());
+                } else {
+                    reader.skipValue();
+                }
+            }
+            reader.endObject(); // }
+            // TODO this is where to insert the entry into the database
+        }
+        reader.endArray(); // ]
+        reader.endObject(); // }
+        reader.endObject(); // }
     }
 
     void GetPlayerAchievements(JsonReader reader) throws IOException {
@@ -327,5 +339,18 @@ final public class SteamAPIParser {
 
     void GetSchemaForGame(JsonReader reader) throws IOException {
 
+    }
+
+    private class DownloadAndParseJSON extends AsyncTask<String, Void, Void> {
+        protected Void doInBackground(String... urls) {
+            try {
+                //call our downloadAndParse function
+                downloadAndParse(urls[0]);
+                //handle cancelling the download
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }
