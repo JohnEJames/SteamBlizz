@@ -2,11 +2,21 @@ package com.example.jack.steamblizz;
 
 import android.os.AsyncTask;
 import android.util.JsonReader;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import com.example.jack.steamblizz.models.SteamAppList;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -16,7 +26,7 @@ import java.util.Vector;
  */
 
 final public class SteamAPIParser {
-    Hashtable<Integer, String> SteamGameList = new Hashtable<Integer, String>(31933);
+   HashMap<Integer, String> SteamGamesList;
     Vector<Integer> OwnedGame = new Vector<Integer>();
     String steamid;
 
@@ -34,37 +44,14 @@ final public class SteamAPIParser {
     void downloadAndParse(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
-        JsonReader reader = new JsonReader(in);
 
-        reader.beginObject();
-        reader.nextName();
-        reader.beginObject();
-        reader.nextName();
-        reader.beginArray();
-        while (reader.hasNext()) {
-            Integer appID = 0;
-            String gameName = "";
-            reader.beginObject();
-            while (reader.hasNext()) {
-                String name = reader.nextName();
-                if (name.equals("appid")) {
-                    appID = reader.nextInt();
-                } else if (name.equals("name")) {
-                    gameName = reader.nextString();
-                } else {
-                    reader.skipValue();
-                }
-            }
-            reader.endObject();
-            SteamGameList.put(appID, gameName);
-        }
-        reader.endArray();
-        reader.endObject();
-        reader.endObject();
+        Gson gson = new Gson();
+        SteamAppList list = gson.fromJson(in, SteamAppList.class);
+        //list.list.games[0].name
     }
 
-    Hashtable<Integer, String> getSteamGameList() {
-        return SteamGameList;
+    HashMap<Integer, String> getSteamGameList() {
+        return SteamGamesList;
     }
 
     private class DownloadAndParseJSON extends AsyncTask<URL, Void, Void> {
@@ -81,3 +68,4 @@ final public class SteamAPIParser {
     }
 
 }
+

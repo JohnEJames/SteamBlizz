@@ -26,7 +26,7 @@ public class SelectPlatform extends AppCompatActivity {
 
         Steam.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent steamIntent = new Intent(v.getContext(), SteamDasboard.class);
+                Intent steamIntent = new Intent(v.getContext(), SteamDashboard.class);
                 startActivity(steamIntent);
             }
         });
