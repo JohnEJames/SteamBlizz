@@ -11,31 +11,78 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.jack.steamblizz.SelectPlatform">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <android.support.v7.widget.CardView
+        android:layout_width="400dp"
+        android:id="@+id/BattleNetID"
+        android:layout_height="250sp"
+        android:layout_below="@+id/steamCard"
         android:layout_alignParentStart="true"
+        android:layout_marginTop="33dp"
+        app:contentPadding="2dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                app:srcCompat="@drawable/battlenet"
+                android:id="@+id/BattleNet"
+                android:layout_width="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_height="match_parent"
+                android:elevation="0dp"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:text="BattleNet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView12"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
+                android:backgroundTint="@color/cardview_shadow_start_color"
+                android:background="@color/cardview_dark_background"
+                android:padding="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="400dp"
+        android:id="@+id/steamCard"
+        android:layout_height="250sp"
+        app:contentPadding="2dp"
         android:layout_alignParentTop="true"
-        android:orientation="vertical">
+        android:layout_alignParentStart="true">
 
-        <ImageButton
-            android:id="@+id/BattleNet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/background_light"
-            android:backgroundTint="@android:color/background_light"
-            android:elevation="0dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/battlenet" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ImageButton
-            android:id="@+id/Steam"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/background_light"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/steam" />
-    </LinearLayout>
+            <ImageButton
+                app:srcCompat="@drawable/steam"
+                android:id="@+id/Steam"
+                android:scaleType="fitCenter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:text="Steam"
+                android:layout_width="match_parent"
+                android:id="@+id/BnetTextView"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/cardview_shadow_start_color"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
+                android:padding="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:background="@color/cardview_dark_background" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
 </RelativeLayout>

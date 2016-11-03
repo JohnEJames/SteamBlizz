@@ -19,7 +19,8 @@
         </activity>
         <activity android:name=".BattleNetDashboard" />
         <activity android:name=".BattleNetAPI" />
-        <activity android:name=".SteamDasboard"></activity>
+        <activity android:name=".SteamDashboard" />
+        <activity android:name=".SteamCustomListView"></activity>
     </application>
 
 </manifest>
