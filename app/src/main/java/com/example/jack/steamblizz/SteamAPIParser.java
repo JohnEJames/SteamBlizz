@@ -3,6 +3,19 @@ package com.example.jack.steamblizz;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.JsonReader;
+import android.util.Log;
+
+import com.example.jack.steamblizz.Models.GetAppList;
+import com.example.jack.steamblizz.Models.GetFriendList;
+import com.example.jack.steamblizz.Models.GetGlobalAchievementPercentagesForApp;
+import com.example.jack.steamblizz.Models.GetNewsForApp;
+import com.example.jack.steamblizz.Models.GetOwnedGames;
+import com.example.jack.steamblizz.Models.GetPlayerAchievements;
+import com.example.jack.steamblizz.Models.GetPlayerSummaries;
+import com.example.jack.steamblizz.Models.GetRecentlyPlayedGames;
+import com.example.jack.steamblizz.Models.GetSchemaForGame;
+import com.example.jack.steamblizz.Models.GetUserStatsForGame;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,524 +31,21 @@ import java.util.Vector;
  */
 
 final public class SteamAPIParser {
-    Context context_;
-    Hashtable<Integer, String> SteamGameList = new Hashtable<Integer, String>(31933);
-    Vector<Integer> OwnedGame = new Vector<Integer>();
-    String steamid_;
+    private Context context_;
+    private GetAppList appList;
+    private GetFriendList friendList;
+    private GetGlobalAchievementPercentagesForApp globalAchievementPercentages;
+    private GetNewsForApp newsForApp;
+    private GetOwnedGames ownedGames;
+    private GetPlayerAchievements playerAchievements;
+    private GetPlayerSummaries playerSummaries;
+    private GetRecentlyPlayedGames recentlyPlayedGames;
+    private GetSchemaForGame schemaForGame;
+    private GetUserStatsForGame userStatsForGame;
+    private Gson gson = new Gson();
 
-    SteamAPIParser(Context context, String steamid) {
+    SteamAPIParser(Context context) {
         context_ = context;
-        steamid_ = steamid;
-        String gameList = context_.getResources().getString(R.string.GetAppList);
-        try {
-            new DownloadAndParseJSON().execute(gameList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    void downloadAndParse(String link) throws IOException {
-
-        URL url = new URL(link);
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
-        JsonReader reader = new JsonReader(in);
-
-        if (link.matches("(.*)GetAppList(.*)")) {
-            GetAppList(reader);
-        } else if (link.matches("(.*)GetNewsForApp(.*)")) {
-            GetNewsForApp(reader);
-        } else if (link.matches("(.*)GetGlobalAchievementPercentagesForApp(.*)")) {
-            GetGlobalAchievementPercentagesForApp(reader);
-        } else if (link.matches("(.*)GetPlayerSummaries(.*)")) {
-            GetPlayerSummaries(reader);
-        } else if (link.matches("(.*)GetFriendList(.*)")) {
-            GetFriendList(reader);
-        } else if (link.matches("(.*)GetPlayerAchievements(.*)")) {
-            GetPlayerAchievements(reader);
-        } else if (link.matches("(.*)GetUserStatsForGame(.*)")) {
-            GetUserStatsForGame(reader);
-        } else if (link.matches("(.*)GetOwnedGames(.*)")) {
-            GetOwnedGames(reader);
-        } else if (link.matches("(.*)GetRecentlyPlayedGames(.*)")) {
-            GetRecentlyPlayedGames(reader);
-        } else if (link.matches("(.*)GetSchemaForGame(.*)")) {
-            GetSchemaForGame(reader);
-        }
-    }
-
-
-    Hashtable<Integer, String> getSteamGameList() {
-        return SteamGameList;
-    }
-
-    void GetNewsForApp(String appid) throws IOException {
-        String request = new StringBuilder(context_.getResources().getString(R.string.GetNewsForApp))
-                .append("appid=").append(appid)
-                .append("&count=7&maxlength=300&format=json").toString();
-        downloadAndParse(request);
-    }
-
-    void GetGlobalAchievementPercentagesForApp(String gameid)  throws IOException {
-        String request = new StringBuilder(context_.getResources().getString(R.string.GetGlobalAchievementPercentagesForApp))
-                .append("gameid=").append(gameid)
-                .append("&format=xml").toString();
-        downloadAndParse(request);
-    }
-
-    void GetPlayerSummaries(String...steamids)  throws IOException {
-        String request = new StringBuilder(context_.getResources().getString(R.string.GetPlayerSummaries))
-                .append("key=").append(context_.getResources().getString(R.string.steam_key))
-                .append("&steamids=").toString();
-        // this interface can get multiple players info in one request
-        for (int i = 0; i < steamids.length; i++) {
-            request += new StringBuilder(steamids[i]).append(",");
-        }
-        downloadAndParse(request);
-    }
-
-    void GetFriendList(String steamid) throws IOException {
-        String request = new StringBuilder(context_.getResources().getString(R.string.GetFriendList))
-                .append("key=").append(context_.getResources().getString(R.string.steam_key))
-                .append("steamid=").append(steamid).append("&relationship=friend").toString();
-        downloadAndParse(request);
-    }
-
-    void GetPlayerAchievements(String appid, String steamid) throws IOException {
-        String request = new StringBuilder(context_.getResources().getString(R.string.GetPlayerAchievements))
-                .append("appid=").append(appid)
-                .append("&key=").append(context_.getResources().getString(R.string.steam_key))
-                .append("&steamid=").append(steamid).toString();
-        downloadAndParse(request);
-    }
-
-    void GetUserStatsForGame(String appid, String steamid) throws IOException {
-        String request = new StringBuilder(context_.getResources().getString(R.string.GetUserStatsForGame))
-                .append("appid=").append(appid)
-                .append("&key=").append(context_.getResources().getString(R.string.steam_key))
-                .append("&steamid=").append(steamid).toString();
-        downloadAndParse(request);
-    }
-
-    void GetOwnedGames(String steamid) throws IOException {
-        String request = new StringBuilder(context_.getResources().getString(R.string.GetOwnedGames))
-                .append("key=").append(context_.getResources().getString(R.string.steam_key))
-                .append("&steamid=").append(steamid)
-                .append("&format=json").toString();
-        downloadAndParse(request);
-    }
-
-    void GetRecentlyPlayedGames(String steamid) throws IOException {
-        String request = new StringBuilder(context_.getResources().getString(R.string.GetRecentlyPlayedGames))
-                .append("key=").append(context_.getResources().getString(R.string.steam_key))
-                .append("&steamid=").append(steamid)
-                .append("&format=json").toString();
-        downloadAndParse(request);
-    }
-
-    void GetSchemaForGame(String appid) throws IOException {
-        String request = new StringBuilder(context_.getResources().getString(R.string.GetSchemaForGame))
-                .append("key=").append(context_.getResources().getString(R.string.steam_key))
-                .append("&appid=").append(appid)
-                .toString();
-        downloadAndParse(request);
-    }
-
-    void GetAppList(JsonReader reader) throws IOException {
-        reader.beginObject(); // {
-        reader.nextName(); // "applist":
-        reader.beginObject(); // {
-        reader.nextName(); // "apps":
-        reader.beginArray(); // [
-        while (reader.hasNext()) { // loop until end of array
-            Integer appID = 0;
-            String gameName = "";
-            reader.beginObject(); // {
-            while (reader.hasNext()) { // loop until end of object
-                String name = reader.nextName();
-                if (name.equals("appid")) {
-                    appID = reader.nextInt();
-                } else if (name.equals("name")) {
-                    gameName = reader.nextString();
-                } else {
-                    reader.skipValue(); // not needed property
-                }
-            }
-            reader.endObject(); // }
-            // TODO this is where to insert the entry into the database
-            SteamGameList.put(appID, gameName); // TODO TEMP
-        }
-        reader.endArray(); // ]
-        reader.endObject(); // }
-        reader.endObject(); // }
-    }
-
-    void GetNewsForApp(JsonReader reader) throws IOException {
-        String gid;
-        String title;
-        String url;
-        String author;
-        String content;
-        Date date;
-
-        reader.beginObject(); // {
-        reader.nextName(); // "appnews":
-        reader.beginObject(); // {
-        reader.nextName(); //"appid" :
-        reader.skipValue(); // 9999,
-        reader.nextName(); // "newsitem":
-        reader.beginArray(); // [
-        while (reader.hasNext()) { // loop until end of array
-            reader.beginObject(); // {
-            while (reader.hasNext()) { // loop until end of object
-                String name = reader.nextName();
-                if (name.equals("gid")) {
-                    gid = reader.nextString();
-                } else if (name.equals("title")) {
-                    title = reader.nextString();
-                } else if (name.equals("url")) {
-                    url = reader.nextString();
-                } else if (name.equals("author")) {
-                    author = reader.nextString();
-                } else if (name.equals("content")) {
-                    content = reader.nextString();
-                } else if (name.equals("date")) {
-                    date = new Date(reader.nextLong());
-                } else {
-                    reader.skipValue();
-                }
-            }
-            reader.endObject(); // }
-            // TODO this is where to insert the entry into the database
-        }
-        reader.endArray(); // ]
-        reader.endObject(); // }
-        reader.endObject(); // }
-    }
-
-    void GetGlobalAchievementPercentagesForApp(JsonReader reader) throws IOException {
-        String achie;
-        Double percent;
-
-        reader.beginObject(); // {
-        reader.nextName(); // "achievementpercentages":
-        reader.beginObject(); // {
-        reader.nextName(); // "achievements":
-        reader.beginArray(); // [
-        while (reader.hasNext()) { // loop until end of array
-            reader.beginObject(); // {
-            while (reader.hasNext()) { // loop until end of object
-                String name = reader.nextName();
-                if (name.equals("name")) {
-                    achie = reader.nextString();
-                } else if (name.equals("percent")) {
-                    percent = reader.nextDouble();
-                } else {
-                    reader.skipValue();
-                }
-            }
-            reader.endObject(); // }
-            // TODO this is where to insert the entry into the database
-        }
-        reader.endArray(); // ]
-        reader.endObject(); // }
-        reader.endObject(); // }
-    }
-
-    void GetPlayerSummaries(JsonReader reader) throws IOException {
-        String steamid;
-        String personaName;
-        Date lastLogOff;
-        String profileURL;
-        String avatarFull;
-        Integer personaState;
-        String realName;
-        Date timeCreated;
-        String countryCode;
-
-        reader.beginObject(); // {
-        reader.nextName(); // "response":
-        reader.beginObject(); // {
-        reader.nextName(); // "players":
-        reader.beginArray(); // {
-        while (reader.hasNext()) { //loop until end of array
-            reader.beginObject(); // {
-            while (reader.hasNext()) { // loop until end of object
-                String name = reader.nextName();
-                if (name.equals("steamid")) {
-                    steamid = reader.nextString();
-                } else if (name.equals("personaName")) {
-                    personaName = reader.nextString();
-                } else if (name.equals("lastlogoff")) {
-                    lastLogOff = new Date(reader.nextLong());
-                } else if (name.equals("profileurl")) {
-                    profileURL = reader.nextString();
-                } else if (name.equals("avatarfull")) {
-                    avatarFull = reader.nextString();
-                } else if (name.equals("personastate")) {
-                    personaState = reader.nextInt();
-                } else if (name.equals("realname")) {
-                    realName = reader.nextString();
-                } else if (name.equals("timecreated")) {
-                    timeCreated = new Date(reader.nextLong());
-                } else if (name.equals("loccountrycode")) {
-                    countryCode = reader.nextString();
-                } else {
-                    reader.skipValue();
-                }
-            }
-            reader.endObject(); // }
-            // TODO this is where to insert the entry into the database
-        }
-        reader.endArray(); // ]
-        reader.endObject(); // }
-        reader.endObject(); // }
-    }
-
-    void GetFriendList(JsonReader reader) throws IOException {
-        String steamid;
-        Date since;
-
-        reader.beginObject(); // {
-        reader.nextName(); // "friendslist":
-        reader.beginObject(); // {
-        reader.nextName(); // "friends":
-        reader.beginArray(); // [
-        while (reader.hasNext()) { // loop until end of array
-            reader.beginObject(); // {
-            while (reader.hasNext()) { // loop until end of object
-                String name = reader.nextName();
-                if (name.equals("steamid")) {
-                    steamid = reader.nextString();
-                } else if (name.equals("friend_since")) {
-                    since = new Date(reader.nextLong());
-                } else {
-                    reader.skipValue();
-                }
-            }
-            reader.endObject(); // }
-            // TODO this is where to insert the entry into the database
-        }
-        reader.endArray(); // ]
-        reader.endObject(); // }
-        reader.endObject(); // }
-    }
-
-    void GetPlayerAchievements(JsonReader reader) throws IOException {
-        String steamid;
-        String gameName;
-        String apiName;
-        Boolean achieved;
-
-        reader.beginObject(); // {
-        reader.nextName(); // "playerstats":
-        reader.beginObject(); // {
-        if (reader.nextName().equals("steamID")) {
-            // Making sure steamID is getting the correct value
-            steamid = reader.nextString();
-        }
-        if (reader.nextName().equals("gameName")) {
-            // Making sure gameName is getting the correct value
-            gameName = reader.nextString();
-        }
-        if (reader.nextName().equals("achievements")) {
-            // Making sure achievements is getting the correct value
-            reader.beginArray(); // [
-            while (reader.hasNext()) { // loop until end of array
-                reader.beginObject(); // {
-                while (reader.hasNext()) { // loop until end of object
-                    String name = reader.nextName();
-                    if (name.equals("apiname")) {
-                        apiName = reader.nextString();
-                    } else if (name.equals("achieved")) {
-                        achieved = reader.nextBoolean();
-                    } else {
-                        reader.skipValue();
-                    }
-                }
-                reader.endObject(); // }
-                // TODO this is where to insert the entry into the database
-                // Only when achieved is true
-            }
-            reader.endArray(); // ]
-            reader.nextName(); // "success":
-            reader.skipValue(); // true
-            reader.endObject(); // }
-            reader.endObject(); // }
-        }
-    }
-
-    void GetUserStatsForGame(JsonReader reader) throws IOException {
-        String steamid;
-        String gameName;
-        String stat;
-        Integer value;
-
-        reader.beginObject(); // {
-        reader.nextName(); // "playerstats":
-        reader.beginObject(); // {
-        if (reader.nextName().equals("steamID")) {
-            // Making sure steamID is getting the correct value
-            steamid = reader.nextString();
-        }
-        if (reader.nextName().equals("gameName")) {
-            // Making sure gameName is getting the correct value
-            gameName = reader.nextString();
-        }
-        if (reader.nextName().equals("stats")) {
-            // Making sure stats si getting the correct value
-            reader.beginArray(); // [
-            while (reader.hasNext()) { // loop until end of array
-                reader.beginObject(); // {
-                while (reader.hasNext()) { // loop until end of object
-                    String name = reader.nextName();
-                    if (name.equals("name")) {
-                        stat = reader.nextString();
-                    } else if (name.equals("value")) {
-                        value = reader.nextInt();
-                    } else {
-                        reader.skipValue();
-                    }
-                }
-                reader.endObject(); // }
-                // TODO this is where to insert the entry into the database
-            }
-            reader.endArray(); // ]
-            reader.endObject(); // }
-            reader.endObject(); // }
-        }
-    }
-
-    void GetOwnedGames(JsonReader reader) throws IOException {
-        Integer gameCount;
-        Integer appid;
-        Integer minutesPlayed;
-
-        reader.beginObject(); // {
-        reader.nextName(); // "response":
-        reader.beginObject(); // {
-        if (reader.nextName().equals("game_count")) {
-            // Making sure gameCount is getting the correct value
-            gameCount = reader.nextInt();
-        }
-        reader.nextName(); // "games":
-        reader.beginArray(); // [
-        while (reader.hasNext()) { // loop until end of array
-            reader.beginObject(); // {
-            while (reader.hasNext()) { // loop until end of object
-                String name = reader.nextName();
-                if (name.equals("appid")) {
-                    appid = reader.nextInt();
-                } else  if (name.equals("playtime_forever")){
-                    minutesPlayed = reader.nextInt();
-                } else {
-                    reader.skipValue();
-                }
-            }
-            reader.endObject(); // }
-            // TODO this is where to insert the entry into the database
-        }
-        reader.endArray(); // ]
-        reader.endObject(); // }
-        reader.endObject(); //}
-    }
-
-    void GetRecentlyPlayedGames(JsonReader reader) throws IOException {
-        Integer totalCount;
-        Integer appid;
-        String title;
-        Integer playtimeForever;
-        Integer playtime2Weeks;
-
-        reader.beginObject(); // {
-        reader.nextName(); // "response":
-        reader.beginObject(); // {
-        if (reader.nextName().equals("total_count")) {
-            // Making sure totalCount is getting the currect value
-            totalCount = reader.nextInt();
-        }
-        reader.nextName(); // "game":
-        reader.beginArray(); // [
-        while (reader.hasNext()) { // loop until end of array
-            reader.beginObject(); // {
-            while (reader.hasNext()) { // loop until end of object
-                String name = reader.nextName();
-                if (name.equals("appid")) {
-                    appid = reader.nextInt();
-                } else if (name.equals("name")) {
-                    title = reader.nextString();
-                } else if (name.equals("playtime_2weeks")) {
-                    playtime2Weeks = reader.nextInt();
-                } else if (name.equals("playtime_forever")) {
-                    playtimeForever = reader.nextInt();
-                } else {
-                    reader.skipValue();
-                }
-            }
-            reader.endObject(); // }
-            // TODO this is where to insert the entry into the database
-        }
-        reader.endArray(); //]
-        reader.endObject(); // }
-        reader.endObject(); // }
-    }
-
-    void GetSchemaForGame(JsonReader reader) throws IOException {
-        String gameName;
-        String stat; // for both achievement and stats
-        String display; // for both achievement and stats
-        String description;
-        String icon;
-        String iconGray;
-
-        reader.beginObject(); // {
-        reader.nextName(); // "game":
-        reader.beginObject(); // {
-        if (reader.nextName().equals("gameName")) {
-            // Making sure gameName is getting the correct value
-            gameName = reader.nextString();
-        }
-        reader.nextName(); // "gameVersion":
-        reader.skipValue(); // "999",
-        reader.nextName(); // "availableGameStats":
-        reader.beginObject(); // {
-        while (reader.hasNext()) { // loop until end of object
-            String statsType = reader.nextName(); // "achievements" or "stats"
-            reader.beginArray(); // [
-            while (reader.hasNext()) { // loop until end of array
-                reader.beginObject(); // {
-                while (reader.hasNext()) { // loop until end of object
-                    String name = reader.nextName();
-                    if (name.equals("name")) {
-                        stat = reader.nextString();
-                    } else if (name.equals("displayName")) {
-                        display = reader.nextString();
-                    } else if (statsType.equals("achievements")) {
-                        if (name.equals("description")) {
-                            description = reader.nextString();
-                        } else if (name.equals("icon")) {
-                            icon = reader.nextString();
-                        } else if (name.equals("icongray")) {
-                            iconGray = reader.nextString();
-                        }
-                    } else {
-                        reader.skipValue();
-                    }
-                }
-                reader.endObject(); // }
-                // TODO this is where to insert the entry into the database
-                if (statsType.equals("achievements")) {
-                    // put into achievement table
-                } else {
-                    // put into stats table
-                }
-            }
-            reader.endArray(); // ]
-        }
-        reader.endObject(); // }
-        reader.endObject(); // }
-        reader.endObject(); // }
     }
 
     private class DownloadAndParseJSON extends AsyncTask<String, Void, Void> {
@@ -549,5 +59,174 @@ final public class SteamAPIParser {
             }
             return null;
         }
+    }
+
+    private void downloadAndParse(String link) throws IOException {
+        URL url = new URL(link);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
+        // for JsonReader
+        //JsonReader reader = new JsonReader(in);
+
+        if (link.matches("(.*)GetAppList(.*)")) {
+            appList = gson.fromJson(in, GetAppList.class);
+        } else if (link.matches("(.*)GetNewsForApp(.*)")) {
+            newsForApp = gson.fromJson(in, GetNewsForApp.class);
+        } else if (link.matches("(.*)GetGlobalAchievementPercentagesForApp(.*)")) {
+            globalAchievementPercentages = gson.fromJson(in, GetGlobalAchievementPercentagesForApp.class);
+        } else if (link.matches("(.*)GetPlayerSummaries(.*)")) {
+            playerSummaries = gson.fromJson(in, GetPlayerSummaries.class);
+        } else if (link.matches("(.*)GetFriendList(.*)")) {
+            friendList = gson.fromJson(in, GetFriendList.class);
+        } else if (link.matches("(.*)GetPlayerAchievements(.*)")) {
+            playerAchievements = gson.fromJson(in, GetPlayerAchievements.class);
+        } else if (link.matches("(.*)GetUserStatsForGame(.*)")) {
+            userStatsForGame = gson.fromJson(in, GetUserStatsForGame.class);
+        } else if (link.matches("(.*)GetOwnedGames(.*)")) {
+            ownedGames = gson.fromJson(in, GetOwnedGames.class);
+        } else if (link.matches("(.*)GetRecentlyPlayedGames(.*)")) {
+            recentlyPlayedGames = gson.fromJson(in, GetRecentlyPlayedGames.class);
+        } else if (link.matches("(.*)GetSchemaForGame(.*)")) {
+            schemaForGame = gson.fromJson(in, GetSchemaForGame.class);
+        } else {
+            Log.e("Internal Error", "Invalid Request");
+        }
+    }
+
+    GetAppList GetAppList() {
+        String request = context_.getResources().getString(R.string.GetAppList);
+
+        try {
+            new DownloadAndParseJSON().execute(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return appList;
+    }
+
+    GetNewsForApp GetNewsForApp(Integer appid) {
+        String request = new StringBuilder(context_.getResources().getString(R.string.GetNewsForApp))
+                .append("appid=").append(appid)
+                .append("&count=7&maxlength=300&format=json").toString();
+
+        try {
+            new DownloadAndParseJSON().execute(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newsForApp;
+    }
+
+    GetGlobalAchievementPercentagesForApp GetGlobalAchievementPercentagesForApp(Integer gameid)  {
+        String request = new StringBuilder(context_.getResources().getString(R.string.GetGlobalAchievementPercentagesForApp))
+                .append("gameid=").append(gameid)
+                .append("&format=xml").toString();
+
+        try {
+            new DownloadAndParseJSON().execute(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return globalAchievementPercentages;
+    }
+
+    GetPlayerSummaries GetPlayerSummaries(String...steamids)  {
+        String request = new StringBuilder(context_.getResources().getString(R.string.GetPlayerSummaries))
+                .append("key=").append(context_.getResources().getString(R.string.steam_key))
+                .append("&steamids=").toString();
+        // this interface can get multiple players info in one request
+        for (int i = 0; i < steamids.length; i++) {
+            request += new StringBuilder(steamids[i]).append(",");
+        }
+
+        try {
+            new DownloadAndParseJSON().execute(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return playerSummaries;
+    }
+
+    GetFriendList GetFriendList(String steamid) {
+        String request = new StringBuilder(context_.getResources().getString(R.string.GetFriendList))
+                .append("key=").append(context_.getResources().getString(R.string.steam_key))
+                .append("steamid=").append(steamid).append("&relationship=friend").toString();
+
+        try {
+            new DownloadAndParseJSON().execute(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return friendList;
+    }
+
+    GetPlayerAchievements GetPlayerAchievements(Integer appid, String steamid) {
+        String request = new StringBuilder(context_.getResources().getString(R.string.GetPlayerAchievements))
+                .append("appid=").append(appid)
+                .append("&key=").append(context_.getResources().getString(R.string.steam_key))
+                .append("&steamid=").append(steamid).toString();
+
+        try {
+            new DownloadAndParseJSON().execute(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return playerAchievements;
+    }
+
+    GetUserStatsForGame GetUserStatsForGame(Integer appid, String steamid) {
+        String request = new StringBuilder(context_.getResources().getString(R.string.GetUserStatsForGame))
+                .append("appid=").append(appid)
+                .append("&key=").append(context_.getResources().getString(R.string.steam_key))
+                .append("&steamid=").append(steamid).toString();
+
+        try {
+            new DownloadAndParseJSON().execute(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return userStatsForGame;
+    }
+
+    GetOwnedGames GetOwnedGames(String steamid) {
+        String request = new StringBuilder(context_.getResources().getString(R.string.GetOwnedGames))
+                .append("key=").append(context_.getResources().getString(R.string.steam_key))
+                .append("&steamid=").append(steamid)
+                .append("&format=json").toString();
+
+        try {
+            new DownloadAndParseJSON().execute(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ownedGames;
+    }
+
+    GetRecentlyPlayedGames GetRecentlyPlayedGames(String steamid) {
+        String request = new StringBuilder(context_.getResources().getString(R.string.GetRecentlyPlayedGames))
+                .append("key=").append(context_.getResources().getString(R.string.steam_key))
+                .append("&steamid=").append(steamid)
+                .append("&format=json").toString();
+
+        try {
+            new DownloadAndParseJSON().execute(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return recentlyPlayedGames;
+    }
+
+    GetSchemaForGame GetSchemaForGame(Integer appid) {
+        String request = new StringBuilder(context_.getResources().getString(R.string.GetSchemaForGame))
+                .append("key=").append(context_.getResources().getString(R.string.steam_key))
+                .append("&appid=").append(appid)
+                .toString();
+
+        try {
+            new DownloadAndParseJSON().execute(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return schemaForGame;
     }
 }

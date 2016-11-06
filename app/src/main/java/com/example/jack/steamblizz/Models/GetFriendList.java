@@ -1,0 +1,18 @@
+package com.example.jack.steamblizz.Models;
+
+/**
+ * Created by dangk on 2016-11-05.
+ */
+
+public class GetFriendList {
+    public FriendList friendlist;
+
+    public class FriendList {
+        public Friend[] friends;
+    }
+
+    public class Friend {
+        String steamid;
+        Long friend_since;
+    }
+}
