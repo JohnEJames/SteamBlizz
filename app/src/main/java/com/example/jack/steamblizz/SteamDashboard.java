@@ -31,19 +31,76 @@ public class SteamDashboard extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steam_dashboard);
 
-        SteamAPIParser steamAPIParser = new SteamAPIParser(this);
 
-        GetAppList appList = steamAPIParser.GetAppList();
-        GetNewsForApp newsForApp = steamAPIParser.GetNewsForApp(440);
-        GetGlobalAchievementPercentagesForApp globalAchievementPercentagesForApp = steamAPIParser.GetGlobalAchievementPercentagesForApp(440);
-        GetPlayerSummaries playerSummaries = steamAPIParser.GetPlayerSummaries("76561197960435530");
-        GetFriendList friendList = steamAPIParser.GetFriendList("76561197960435530");
-        GetPlayerAchievements playerAchievements = steamAPIParser.GetPlayerAchievements(440, "76561197960435530");
-        GetUserStatsForGame userStatsForGame = steamAPIParser.GetUserStatsForGame(440, "76561197960435530");
-        GetOwnedGames ownedGames = steamAPIParser.GetOwnedGames("76561197960435530");
-        GetRecentlyPlayedGames recentlyPlayedGames = steamAPIParser.GetRecentlyPlayedGames("76561197960435530");
-        GetSchemaForGame schemaForGame = steamAPIParser.GetSchemaForGame(440);
+        new SteamAPIParser(this, new SteamAPIParser.AsyncResponse<GetAppList>() {
+            @Override
+            public void processFinish(GetAppList output) {
+                System.out.println(output);
+            }
+        }).GetAppList();
 
+        new SteamAPIParser(this, new SteamAPIParser.AsyncResponse<GetNewsForApp>() {
+            @Override
+            public void processFinish(GetNewsForApp output) {
+                System.out.println(output);
+            }
+        }).GetNewsForApp(440);
+
+        new SteamAPIParser(this, new SteamAPIParser.AsyncResponse<GetGlobalAchievementPercentagesForApp>() {
+            @Override
+            public void processFinish(GetGlobalAchievementPercentagesForApp output) {
+                System.out.println(output);
+            }
+        }).GetGlobalAchievementPercentagesForApp(440);
+
+        new SteamAPIParser(this, new SteamAPIParser.AsyncResponse<GetPlayerSummaries>() {
+            @Override
+            public void processFinish(GetPlayerSummaries output) {
+                System.out.println(output);
+            }
+        }).GetPlayerSummaries("76561197960435530");
+
+        new SteamAPIParser(this, new SteamAPIParser.AsyncResponse<GetFriendList>() {
+            @Override
+            public void processFinish(GetFriendList output) {
+                System.out.println(output);
+            }
+        }).GetFriendList("76561197960435530");
+
+        new SteamAPIParser(this, new SteamAPIParser.AsyncResponse<GetPlayerAchievements>() {
+            @Override
+            public void processFinish(GetPlayerAchievements output) {
+                System.out.println(output);
+            }
+        }).GetPlayerAchievements(440, "76561197960435530");
+
+        new SteamAPIParser(this, new SteamAPIParser.AsyncResponse<GetUserStatsForGame>() {
+            @Override
+            public void processFinish(GetUserStatsForGame output) {
+                System.out.println(output);
+            }
+        }).GetUserStatsForGame(440, "76561197960435530");
+
+        new SteamAPIParser(this, new SteamAPIParser.AsyncResponse<GetOwnedGames>() {
+            @Override
+            public void processFinish(GetOwnedGames output) {
+                System.out.println(output);
+            }
+        }).GetOwnedGames("76561197960435530");
+
+        new SteamAPIParser(this, new SteamAPIParser.AsyncResponse<GetRecentlyPlayedGames>() {
+            @Override
+            public void processFinish(GetRecentlyPlayedGames output) {
+                System.out.println(output);
+            }
+        }).GetRecentlyPlayedGames("76561197960435530");
+
+        new SteamAPIParser(this, new SteamAPIParser.AsyncResponse<GetSchemaForGame>() {
+            @Override
+            public void processFinish(GetSchemaForGame output) {
+                System.out.println(output);
+            }
+        }).GetSchemaForGame(440);
     }
 
 

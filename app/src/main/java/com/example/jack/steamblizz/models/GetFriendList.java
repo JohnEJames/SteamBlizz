@@ -5,7 +5,7 @@ package com.example.jack.steamblizz.Models;
  */
 
 public class GetFriendList {
-    public FriendList friendlist;
+    public FriendList friendslist;
 
     public class FriendList {
         public Friend[] friends;

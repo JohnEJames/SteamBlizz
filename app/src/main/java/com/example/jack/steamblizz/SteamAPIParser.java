@@ -30,8 +30,10 @@ import java.util.Vector;
  * Created by Jack on 2016-10-26.
  */
 
-final public class SteamAPIParser {
+final public class SteamAPIParser <T> extends AsyncTask<String, Void, T> {
     private Context context_;
+    T res;
+    /*
     private GetAppList appList;
     private GetFriendList friendList;
     private GetGlobalAchievementPercentagesForApp globalAchievementPercentages;
@@ -42,43 +44,40 @@ final public class SteamAPIParser {
     private GetRecentlyPlayedGames recentlyPlayedGames;
     private GetSchemaForGame schemaForGame;
     private GetUserStatsForGame userStatsForGame;
+    */
     private Gson gson = new Gson();
 
     public interface AsyncResponse<T> {
-        T processFinish(T output);
+        void processFinish(T output);
     }
 
-    SteamAPIParser(Context context) {
-
+    SteamAPIParser(Context context, AsyncResponse<T> delegate) {
+        this.delegate = delegate;
         context_ = context;
     }
 
-    private class DownloadAndParseJSON<T> extends AsyncTask<String, Void, T> {
-        public AsyncResponse delegate;
+    public AsyncResponse delegate;
 
-        public DownloadAndParseJSON(AsyncResponse delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        protected T doInBackground(String... urls) {
-            try {
-                //call our downloadAndParse function
-                downloadAndParse(urls[0]);
-                //handle cancelling the download
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(T result) {
-            delegate.processFinish(result);
+    @Override
+    protected T doInBackground(String... urls) {
+        T ret = null;
+        try {
+            //call our downloadAndParse function
+            ret = downloadAndParse(urls[0]);
+            //handle cancelling the download
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return ret;
         }
     }
 
-    private void downloadAndParse(String link) throws IOException {
+    @Override
+    protected void onPostExecute(T result) {
+        delegate.processFinish(result);
+    }
+
+    private T downloadAndParse(String link) throws IOException {
         URL url = new URL(link);
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
@@ -86,74 +85,66 @@ final public class SteamAPIParser {
         //JsonReader reader = new JsonReader(in);
 
         if (link.matches("(.*)GetAppList(.*)")) {
-            appList = gson.fromJson(in, GetAppList.class);
+            return (T)gson.fromJson(in, GetAppList.class);
         } else if (link.matches("(.*)GetNewsForApp(.*)")) {
-            newsForApp = gson.fromJson(in, GetNewsForApp.class);
+            return (T)gson.fromJson(in, GetNewsForApp.class);
         } else if (link.matches("(.*)GetGlobalAchievementPercentagesForApp(.*)")) {
-            globalAchievementPercentages = gson.fromJson(in, GetGlobalAchievementPercentagesForApp.class);
+            return (T)gson.fromJson(in, GetGlobalAchievementPercentagesForApp.class);
         } else if (link.matches("(.*)GetPlayerSummaries(.*)")) {
-            playerSummaries = gson.fromJson(in, GetPlayerSummaries.class);
+            return (T)gson.fromJson(in, GetPlayerSummaries.class);
         } else if (link.matches("(.*)GetFriendList(.*)")) {
-            friendList = gson.fromJson(in, GetFriendList.class);
+            return (T)gson.fromJson(in, GetFriendList.class);
         } else if (link.matches("(.*)GetPlayerAchievements(.*)")) {
-            playerAchievements = gson.fromJson(in, GetPlayerAchievements.class);
+            return (T)gson.fromJson(in, GetPlayerAchievements.class);
         } else if (link.matches("(.*)GetUserStatsForGame(.*)")) {
-            userStatsForGame = gson.fromJson(in, GetUserStatsForGame.class);
+            return (T)gson.fromJson(in, GetUserStatsForGame.class);
         } else if (link.matches("(.*)GetOwnedGames(.*)")) {
-            ownedGames = gson.fromJson(in, GetOwnedGames.class);
+            return (T)gson.fromJson(in, GetOwnedGames.class);
         } else if (link.matches("(.*)GetRecentlyPlayedGames(.*)")) {
-            recentlyPlayedGames = gson.fromJson(in, GetRecentlyPlayedGames.class);
+            return (T)gson.fromJson(in, GetRecentlyPlayedGames.class);
         } else if (link.matches("(.*)GetSchemaForGame(.*)")) {
-            schemaForGame = gson.fromJson(in, GetSchemaForGame.class);
+            return (T)gson.fromJson(in, GetSchemaForGame.class);
         } else {
             Log.e("Internal Error", "Invalid Request");
+            return null;
         }
     }
 
-    GetAppList GetAppList() {
+    void GetAppList() {
         String request = context_.getResources().getString(R.string.GetAppList);
 
         try {
-            new DownloadAndParseJSON<GetAppList>(new AsyncResponse<GetAppList>(){
-
-                @Override
-                public GetAppList processFinish(GetAppList output) {
-                    return appList;
-                }
-            }).execute(request);
+            this.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return appList;
     }
 
-    GetNewsForApp GetNewsForApp(Integer appid) {
+    void GetNewsForApp(Integer appid) {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetNewsForApp))
                 .append("appid=").append(appid)
                 .append("&count=7&maxlength=300&format=json").toString();
 
         try {
-            new DownloadAndParseJSON().execute(request);
+            this.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return newsForApp;
     }
 
-    GetGlobalAchievementPercentagesForApp GetGlobalAchievementPercentagesForApp(Integer gameid)  {
+    void GetGlobalAchievementPercentagesForApp(Integer gameid)  {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetGlobalAchievementPercentagesForApp))
                 .append("gameid=").append(gameid)
                 .append("&format=json").toString();
 
         try {
-            new DownloadAndParseJSON().execute(request);
+            this.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return globalAchievementPercentages;
     }
 
-    GetPlayerSummaries GetPlayerSummaries(String...steamids)  {
+    void GetPlayerSummaries(String...steamids)  {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetPlayerSummaries))
                 .append("key=").append(context_.getResources().getString(R.string.steam_key))
                 .append("&steamids=").toString();
@@ -163,93 +154,86 @@ final public class SteamAPIParser {
         }
 
         try {
-            new DownloadAndParseJSON().execute(request);
+            this.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return playerSummaries;
     }
 
-    GetFriendList GetFriendList(String steamid) {
+    void GetFriendList(String steamid) {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetFriendList))
                 .append("key=").append(context_.getResources().getString(R.string.steam_key))
                 .append("&steamid=").append(steamid).append("&relationship=friend").toString();
 
         try {
-            new DownloadAndParseJSON().execute(request);
+            this.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return friendList;
     }
 
-    GetPlayerAchievements GetPlayerAchievements(Integer appid, String steamid) {
+    void GetPlayerAchievements(Integer appid, String steamid) {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetPlayerAchievements))
                 .append("appid=").append(appid)
                 .append("&key=").append(context_.getResources().getString(R.string.steam_key))
                 .append("&steamid=").append(steamid).toString();
 
         try {
-            new DownloadAndParseJSON().execute(request);
+            this.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return playerAchievements;
     }
 
-    GetUserStatsForGame GetUserStatsForGame(Integer appid, String steamid) {
+    void GetUserStatsForGame(Integer appid, String steamid) {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetUserStatsForGame))
                 .append("appid=").append(appid)
                 .append("&key=").append(context_.getResources().getString(R.string.steam_key))
                 .append("&steamid=").append(steamid).toString();
 
         try {
-            new DownloadAndParseJSON().execute(request);
+            this.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return userStatsForGame;
     }
 
-    GetOwnedGames GetOwnedGames(String steamid) {
+    void GetOwnedGames(String steamid) {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetOwnedGames))
                 .append("key=").append(context_.getResources().getString(R.string.steam_key))
                 .append("&steamid=").append(steamid)
                 .append("&format=json").toString();
 
         try {
-            new DownloadAndParseJSON().execute(request);
+            this.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ownedGames;
     }
 
-    GetRecentlyPlayedGames GetRecentlyPlayedGames(String steamid) {
+    void GetRecentlyPlayedGames(String steamid) {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetRecentlyPlayedGames))
                 .append("key=").append(context_.getResources().getString(R.string.steam_key))
                 .append("&steamid=").append(steamid)
                 .append("&format=json").toString();
 
         try {
-            new DownloadAndParseJSON().execute(request);
+            this.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return recentlyPlayedGames;
     }
 
-    GetSchemaForGame GetSchemaForGame(Integer appid) {
+    void GetSchemaForGame(Integer appid) {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetSchemaForGame))
                 .append("key=").append(context_.getResources().getString(R.string.steam_key))
                 .append("&appid=").append(appid)
                 .toString();
 
         try {
-            new DownloadAndParseJSON().execute(request);
+            this.execute(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return schemaForGame;
     }
 }
