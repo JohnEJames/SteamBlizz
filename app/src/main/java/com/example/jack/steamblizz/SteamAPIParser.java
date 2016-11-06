@@ -44,12 +44,24 @@ final public class SteamAPIParser {
     private GetUserStatsForGame userStatsForGame;
     private Gson gson = new Gson();
 
+    public interface AsyncResponse<T> {
+        T processFinish(T output);
+    }
+
     SteamAPIParser(Context context) {
+
         context_ = context;
     }
 
-    private class DownloadAndParseJSON extends AsyncTask<String, Void, Void> {
-        protected Void doInBackground(String... urls) {
+    private class DownloadAndParseJSON<T> extends AsyncTask<String, Void, T> {
+        public AsyncResponse delegate;
+
+        public DownloadAndParseJSON(AsyncResponse delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        protected T doInBackground(String... urls) {
             try {
                 //call our downloadAndParse function
                 downloadAndParse(urls[0]);
@@ -58,6 +70,11 @@ final public class SteamAPIParser {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(T result) {
+            delegate.processFinish(result);
         }
     }
 
@@ -97,7 +114,13 @@ final public class SteamAPIParser {
         String request = context_.getResources().getString(R.string.GetAppList);
 
         try {
-            new DownloadAndParseJSON().execute(request);
+            new DownloadAndParseJSON<GetAppList>(new AsyncResponse<GetAppList>(){
+
+                @Override
+                public GetAppList processFinish(GetAppList output) {
+                    return appList;
+                }
+            }).execute(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -120,7 +143,7 @@ final public class SteamAPIParser {
     GetGlobalAchievementPercentagesForApp GetGlobalAchievementPercentagesForApp(Integer gameid)  {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetGlobalAchievementPercentagesForApp))
                 .append("gameid=").append(gameid)
-                .append("&format=xml").toString();
+                .append("&format=json").toString();
 
         try {
             new DownloadAndParseJSON().execute(request);
@@ -150,7 +173,7 @@ final public class SteamAPIParser {
     GetFriendList GetFriendList(String steamid) {
         String request = new StringBuilder(context_.getResources().getString(R.string.GetFriendList))
                 .append("key=").append(context_.getResources().getString(R.string.steam_key))
-                .append("steamid=").append(steamid).append("&relationship=friend").toString();
+                .append("&steamid=").append(steamid).append("&relationship=friend").toString();
 
         try {
             new DownloadAndParseJSON().execute(request);
