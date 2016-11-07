@@ -13,9 +13,9 @@ public class GetRecentlyPlayedGames {
     }
 
     public class Game {
-        Integer appid;
-        String name;
-        Integer playtime_2weeks;
-        Integer playtime_forever;
+        public Integer appid;
+        public String name;
+        public Integer playtime_2weeks;
+        public Integer playtime_forever;
     }
 }

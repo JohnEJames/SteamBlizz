@@ -13,4 +13,6 @@
     <string name="GetOwnedGames">http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?</string>
     <string name="GetRecentlyPlayedGames">http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?</string>
     <string name="GetSchemaForGame">http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_about">About</string>
 </resources>

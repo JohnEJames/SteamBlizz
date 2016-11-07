@@ -16,17 +16,18 @@
         android:layout_height="400px"
         app:srcCompat="@mipmap/ic_launcher"
         android:layout_marginTop="22dp"
-        android:id="@+id/imageView"
+        android:id="@+id/ProfilePic"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:padding="10sp" />
 
     <Button
         android:text="Stats"
         android:layout_height="wrap_content"
         android:layout_marginTop="19dp"
         android:id="@+id/button"
-        android:layout_below="@+id/button2"
-        android:layout_alignStart="@+id/button2"
+        android:layout_below="@+id/MyGames"
+        android:layout_alignStart="@+id/MyGames"
         android:layout_width="400dp" />
 
     <Button
@@ -42,9 +43,9 @@
         android:text="MyGames"
         android:layout_height="wrap_content"
         android:layout_marginTop="37dp"
-        android:id="@+id/button2"
+        android:id="@+id/MyGames"
         android:layout_width="400dp"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@+id/ProfilePic"
         android:layout_toStartOf="@+id/textView11" />
 
     <android.support.design.widget.FloatingActionButton
@@ -57,28 +58,47 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:text="Games Owned"
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_alignTop="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@+id/ProfilePic"
+        android:layout_toEndOf="@+id/ProfilePic"
+        android:layout_above="@+id/MyGames"
+        android:weightSum="1">
 
-    <TextView
-        android:text="Last Played Game"
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_below="@+id/textView5"
-        android:layout_toEndOf="@+id/imageView" />
+        <TextView
+            android:text="Games Owned"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Textview" />
 
-    <TextView
-        android:text="Last Login"
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_below="@+id/textView8"
-        android:layout_toEndOf="@+id/imageView" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/GamesCount" />
+
+        <TextView
+            android:text="Last played game"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView4" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/LastPlayGame" />
+
+        <TextView
+            android:text="Last log in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/LastLogIn" />
+    </LinearLayout>
 
 </RelativeLayout>

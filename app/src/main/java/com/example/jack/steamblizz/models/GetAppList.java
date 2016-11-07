@@ -10,11 +10,11 @@ public class GetAppList {
     public  AppList applist;
 
     public class AppList {
-        App[] apps;
+        public App[] apps;
     }
 
     public class App {
-        Integer appid;
-        String name;
+        public Integer appid;
+        public String name;
     }
 }

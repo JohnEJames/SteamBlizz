@@ -20,7 +20,13 @@
         <activity android:name=".BattleNetDashboard" />
         <activity android:name=".BattleNetAPI" />
         <activity android:name=".SteamDashboard" />
-        <activity android:name=".SteamCustomListView"></activity>
+        <activity android:name=".SteamCustomListView" />
+        <activity
+            android:name=".About"
+            android:label="@string/title_activity_about"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Settings" />
+        <activity android:name=".SetUp" />
     </application>
 
 </manifest>

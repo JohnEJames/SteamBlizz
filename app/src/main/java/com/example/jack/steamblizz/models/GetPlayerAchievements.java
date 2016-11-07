@@ -14,7 +14,7 @@ public class GetPlayerAchievements {
     }
 
     public class Achievement {
-        String apiname;
-        Integer achieved;
+        public String apiname;
+        public Integer achieved;
     }
 }

@@ -13,7 +13,7 @@ public class GetOwnedGames {
     }
 
     public class Game {
-        Integer appid;
-        Integer playtime_forever;
+        public Integer appid;
+        public Integer playtime_forever;
     }
 }

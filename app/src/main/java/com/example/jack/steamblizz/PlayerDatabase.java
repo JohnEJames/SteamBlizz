@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public  class PlayerDatabase extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "SteamDB.db";
+    public static final String DATABASE_NAME = "SteamDB";
     private static final int DATABASE_VERSION = 1;
     private static final String TABLE_ACCOUNT = "Players";
 
@@ -44,6 +44,11 @@ public  class PlayerDatabase extends SQLiteOpenHelper {
         db.execSQL("Drop tables if exists" + TABLE_ACCOUNT);
         onCreate(db);
     }
+    public void ResetTable() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("Drop tables if exists" + TABLE_ACCOUNT);
+        onCreate(db);
+    }
 
     public boolean insertPlayer(String ID, String Name, String Profile, String Avatar, Integer state, Integer Lastondate, String Country, Integer CreateDate) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -64,6 +69,12 @@ public  class PlayerDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from player where id=" + id + "", null);
         return res;
+    }
+
+    public Boolean deletePlayer(String id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("Delete from " + TABLE_ACCOUNT + "Where ID=" + id);
+        return true;
     }
 
     public boolean updatePlayer(String SteamID, String Name, String Profile, String Avatar, Integer state, Integer Lastondate, String Country, Integer CreateDate) {

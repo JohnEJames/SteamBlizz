@@ -32,19 +32,6 @@ import java.util.Vector;
 
 final public class SteamAPIParser <T> extends AsyncTask<String, Void, T> {
     private Context context_;
-    T res;
-    /*
-    private GetAppList appList;
-    private GetFriendList friendList;
-    private GetGlobalAchievementPercentagesForApp globalAchievementPercentages;
-    private GetNewsForApp newsForApp;
-    private GetOwnedGames ownedGames;
-    private GetPlayerAchievements playerAchievements;
-    private GetPlayerSummaries playerSummaries;
-    private GetRecentlyPlayedGames recentlyPlayedGames;
-    private GetSchemaForGame schemaForGame;
-    private GetUserStatsForGame userStatsForGame;
-    */
     private Gson gson = new Gson();
 
     public interface AsyncResponse<T> {

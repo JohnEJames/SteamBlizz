@@ -12,7 +12,7 @@ public class GetFriendList {
     }
 
     public class Friend {
-        String steamid;
-        Long friend_since;
+        public String steamid;
+        public Long friend_since;
     }
 }

@@ -12,15 +12,15 @@ public class GetPlayerSummaries {
     }
 
     public class Player {
-        String steamid;
-        Integer communityvisibilitystate;
-        String personaname;
-        Long lastlogoff;
-        String profileurl;
-        String avatarfull;
-        Integer personastate;
-        String realname;
-        Long timecreated;
-        String loccountrycode;
+        public String steamid;
+        public Integer communityvisibilitystate;
+        public String personaname;
+        public Integer lastlogoff;
+        public String profileurl;
+        public String avatarfull;
+        public Integer personastate;
+        public String realname;
+        public Integer timecreated;
+        public String loccountrycode;
     }
 }

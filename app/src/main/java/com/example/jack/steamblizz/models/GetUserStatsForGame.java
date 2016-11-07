@@ -14,7 +14,7 @@ public class GetUserStatsForGame {
     }
 
     public class Stats {
-        String name;
-        Integer value;
+        public String name;
+        public Integer value;
     }
 }

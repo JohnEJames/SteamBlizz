@@ -8,15 +8,15 @@ public class GetNewsForApp {
     public AppNew appnews;
 
     public class AppNew {
-        Integer appid;
-        NewsItem[] newsitems;
+        public Integer appid;
+        public NewsItem[] newsitems;
     }
 
     public class NewsItem {
-        String title;
-        String url;
-        String author;
-        String contents;
-        Long date;
+        public String title;
+        public String url;
+        public String author;
+        public String contents;
+        public Long date;
     }
 }

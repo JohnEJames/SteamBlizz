@@ -12,7 +12,7 @@ public class GetGlobalAchievementPercentagesForApp {
     }
 
     public class Achievement {
-        String name;
-        Double percent;
+        public String name;
+        public Double percent;
     }
 }
